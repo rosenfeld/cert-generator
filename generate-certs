@@ -1,0 +1,43 @@
+#!/bin/bash
+
+FQDN=$1
+
+# Create our very own Root Certificate Authority
+
+[ -f my-root-ca.key.pem ] || \
+openssl genrsa -out my-root-ca.key.pem 2048
+
+# Self-sign our Root Certificate Authority
+
+[ -f my-root-ca.crt.pem ] || \
+openssl req -x509 -new -nodes -key my-root-ca.key.pem -days 9131 \
+  -out my-root-ca.crt.pem \
+  -subj "/C=US/ST=Utah/L=Provo/O=ACME Signing Authority Inc/CN=example.net"
+
+# Create Certificate for this domain
+
+[ -f ${FQDN}.privkey.pem ] || \
+openssl genrsa -out ${FQDN}.privkey.pem 2048
+
+# Ensure extfile exists
+
+[ -f extfile ] || ( echo extfile is missing && exit 1)
+
+# Create the CSR
+
+openssl req -new -key ${FQDN}.privkey.pem -out ${FQDN}.csr.pem \
+  -subj "/C=US/ST=Utah/L=Provo/O=ACME Service/CN=${FQDN}" \
+  -reqexts SAN -extensions SAN \
+  -config <(cat /etc/ssl/openssl.cnf extfile)
+
+# Sign the request from Server with your Root CA
+
+openssl x509 -req -in ${FQDN}.csr.pem \
+  -CA my-root-ca.crt.pem \
+  -CAkey my-root-ca.key.pem \
+  -CAcreateserial \
+  -out ${FQDN}.cert.pem \
+  -days 9131 \
+  -extensions SAN \
+  -extfile extfile
+
