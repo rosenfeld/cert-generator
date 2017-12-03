@@ -6,9 +6,11 @@ Then simply point your browser to http://localhost:4000 to generate your dev cer
 
 Unzip the returned value and read INSTRUCTIONS.html for further information on installing them.
 
-Built with:
+Automatically built from Github, but you can build with:
 
     docker build --tag rosenfeld/cert-generator .
+
+The container is available in Docker Hub [here](https://hub.docker.com/r/rosenfeld/cert-generator/).
 
 # Contributions
 
