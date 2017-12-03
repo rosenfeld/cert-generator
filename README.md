@@ -14,5 +14,7 @@ The container is available in Docker Hub [here](https://hub.docker.com/r/rosenfe
 
 # Contributions
 
+The source code is available in Github [here](https://github.com/rosenfeld/cert-generator).
+
 The included INSTRUCTIONS.html currently only mentions Linux and nginx. Pull requests to include
 instructions for other servers and operating systems are welcomed.
